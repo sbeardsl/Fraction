@@ -126,13 +126,13 @@ void TestCreation( void )
     ReportFraction( "f12", "935/312", f12 );
     
     Fraction f13(3*5*11*17,5*11*17);
-    ReportFraction( "f12", "3/1", f13 );
+    ReportFraction( "f13", "3/1", f13 );
     
     Fraction fZero( 1, 0);
-    ReportFraction( "fZero", "1/1", fZero);
+    ReportFraction( "fZero", "Nan", fZero);
     
-    Fraction bad_two_neg( -5, -2 );
-    ReportFraction( "f_2Neg", "5/2", bad_two_neg);
+    Fraction two_neg( -5, -2 );  // now defined a positive
+    ReportFraction( "f_2Neg", "5/2", two_neg);
 }
 
 void TestEquality( void )
@@ -363,8 +363,10 @@ void TestDivide( void )
     f1 = Fraction( -2,3 ) / Fraction( 1, 4 );
     ReportFraction( " d5", "-8/3", f1 );
     
-    f1 = Fraction( -4,4 ) / Fraction( -2, -2 );
-    ReportFraction( " d6", "-1/1", f1 );
+    f1 = Fraction( -4,4 );
+    f2 = Fraction( -2, -2 );
+    Fraction f3 = f1 / f2;
+    ReportFraction( " d6", "-1/1", f3 );
     
     f1 = Fraction( -2,3 ) / Fraction( -1, 4 );
     ReportFraction( " d7", "8/3", f1 );

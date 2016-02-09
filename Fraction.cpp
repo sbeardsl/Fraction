@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <math.h>
 #include "Fraction.hpp"
 
 // TODO: bigger list, how to handle values over max saved value?
@@ -17,15 +19,15 @@
 
 // this is a bounded solution, if we need to factor a value above out highest prime
 // we fail to properly reduce the fraction...
-static const long primes[] =
+static const long init_primes[] =
 {
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
-    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
-    0
+    2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+ // , 31, 37, 41, 43, 47, 53, 59, 61, 67, 71
 };
 
-// const static long numPrimes = sizeof(primes)/sizeof(long);
+const static long numPrimes = sizeof(init_primes)/sizeof(long);
 
+const static std::vector<long> vPrimes( init_primes, &init_primes[numPrimes] );
 
 
 // if both values are positive, fraction is positive
@@ -63,74 +65,59 @@ void Fraction::simplify( void )
 {
     standardize_values();
     
-    // now reduce fraction by common factors
+    // now TRY to reduce the fraction by common factors
     // we will walk the prime table from smallest to largest
     // reducing the numerator and denominator by common factors when we find them.
     // until we run out of primes or the next prime is larger than the smaller of our two values.
-    long prime_index = 0;
     
-    // TO TEST: with negative numerator
-    // We don't have to test for common factors larger than the smallest of our values
-    long max_possible_gcd = labs(m_numerator);
-    if (m_denominator<max_possible_gcd)
-        max_possible_gcd = m_denominator;
-    
-    while ((primes[prime_index] <= max_possible_gcd) && (primes[prime_index] > 0))
+    for( std::vector<long>::const_iterator iPrime = vPrimes.begin(); iPrime != vPrimes.end(); iPrime++ )
     {
-        if ( ((m_numerator % primes[prime_index]) == 0) && ((m_denominator % primes[prime_index]) == 0) )
-        {
-            m_numerator = m_numerator / primes[prime_index];
-            m_denominator = m_denominator / primes[prime_index];
-            
-            // leave prime index unchanged, try agian with same value
-            // TODO: better way to do handle this?
-            
-            // if we have reduced our values, reset the max_possible_gcd
-            if (labs(m_numerator)<max_possible_gcd)
-                max_possible_gcd = labs(m_numerator);
-            if (m_denominator<max_possible_gcd)
-                max_possible_gcd = m_denominator;
+        // If the current prime is larger than both our values, we are done
+        if ( ((*iPrime) > m_numerator) && ((*iPrime) > m_denominator) )
+            break;
+        
+        while ( ((m_numerator % (*iPrime)) == 0) && ((m_denominator % (*iPrime)) == 0) )
+        {   // keep looping until current iPrime is no longer a common factor (e.g. 8 loops three times 2 * 2 * 2 )
+            m_numerator = m_numerator / (*iPrime);
+            m_denominator = m_denominator / (*iPrime);
         }
-        else
-            prime_index++; // TODO: bump up by prime numbers not not linear
     }
     
-    // TODO: catch when we run past the end of our primes...
+    // Note: if we try to factor values larger than our largest prime
+    // we leave the fraction with a valid but not fully simplified value.
+    // the math will continue to work but the displayed numerator & denominator will not be as expected.
 
     standardize_values();
 }
 
-// enfore four constraints
-// 1) if the denominator == 0, set it to 1 (and report and error somehow)
+// enfore constraints
 // 2) if one of the two values is negative, make sure its the numerator
-// 3) if both values are negative, make both positive
+// 3) if both values are negative, make both values positive
 // 4) if the numerator == 0, make the denominator == 1
 void Fraction::standardize_values(void)
 {
-    if (m_denominator == 0)
-    {
-        // TODO: Error handling - Throw exception here?
-        std::cout << "ERROR: Fraction with denominator == 0 [" << m_numerator << "/" << m_denominator <<"]\n";
-        m_denominator = 1;
+    if (!isValid())
+    {   // if Fraction is not valid, force numerator to 0
+        m_numerator = 0;
+        return;
     }
         
-    if (m_denominator < 0) // if denominator is negative
+    if ((m_denominator < 0) && (m_numerator < 0))
     {
-        if (m_numerator > 0) // if d is negative but n is positive,
+        if (m_numerator >= 0) // if d is negative but n is NOT negative,
         {   // make the fraction negative by setting only the numerator to negative
             m_numerator = -labs(m_numerator);  // make the numerator negative
             m_denominator = labs(m_denominator);  // make denominator positive
         }
         else
-        {   // // TODO: Error handling - Throw exception here?
-            std::cout << "Warning: Fraction with two negative parts turn positive [" << m_numerator << "/" << m_denominator <<"]\n";
+        {
             // make both positive
             m_numerator = labs(m_numerator);  // make the numerator negative
             m_denominator = labs(m_denominator);  // make denominator positive
         }
     }
     
-    if (m_numerator == 0)
+    if (isValid() && (m_numerator == 0))
         m_denominator = 1;
 }
 
@@ -140,7 +127,10 @@ const std::string Fraction::asString( void )
 {
     std::stringstream outStream;
     
-    outStream << numerator() << "/" << denominator();
+    if (isValid())
+        outStream << numerator() << "/" << denominator();
+    else
+        outStream << "Nan";
     
     return std::string( outStream.str() );
 }
@@ -150,9 +140,18 @@ const std::string Fraction::asDoubleAsString( void )
 {
     std::stringstream outStream;
     
-    outStream << asDouble();
-    
+    if (isValid())
+        outStream << asDouble();
+    else
+        outStream << "Nan";
+        
     return std::string( outStream.str() );
+}
+
+const double Fraction::asDouble( void )
+{
+    // if !isValid() (i.e. m_denominator == 0 will result in Nan
+        return (double) m_numerator / (double) m_denominator;
 }
 
 // assume values stored in simplied form

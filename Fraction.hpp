@@ -29,10 +29,14 @@ public:
     // initalize
     Fraction(long n, long d);
     
+    // Fraction is not valid if denominator == 0
+    // m_denominator is set to 0
+    bool isValid( void ){ return m_denominator != 0; }
+    
     // display
     const std::string asString( void ); // "1/2"
     const std::string asDoubleAsString( void ); // ".5"
-    const double asDouble( void ){ return ( (double) m_numerator / (double) m_denominator ); }
+    const double asDouble( void );
     
     // access elements
     const long numerator( void ){ return m_numerator; }

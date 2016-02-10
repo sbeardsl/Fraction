@@ -13,6 +13,7 @@
 static void ReportFraction( std::string sName, std::string sDescription, Fraction f );
 static void ReportEqual( std::string sName, bool bShouldMatch, Fraction f1, Fraction f2 );
 static void ReportGreaterThan( std::string sName, bool bShouldBeGreater, Fraction f1, Fraction f2 );
+static void ReportValid( std::string sName, bool bShouldBeValid, Fraction f );
 
 static void TestCreation( void );
 static void TestEquality( void );
@@ -21,6 +22,8 @@ static void TestSub( void );
 static void TestMult( void );
 static void TestDivide( void );
 static void TestCompare( void );
+static void TestInvalid( void );
+
 
 int main(int argc, const char * argv[])
 {
@@ -31,6 +34,7 @@ int main(int argc, const char * argv[])
     TestMult();
     TestDivide();
     TestCompare();
+    TestInvalid();
     
     return 0;
 }
@@ -85,6 +89,24 @@ void ReportGreaterThan( std::string sName, bool bShouldF1BeGreater, Fraction f1,
     }
 }
 
+void ReportValid( std::string sName, bool bShouldBeValid, Fraction f )
+{
+    if (f.isValid() == bShouldBeValid)
+    {
+        if (bShouldBeValid)
+            std::cout << sName << " Pass: valid\n";
+        else
+            std::cout << sName << " Pass: invalid\n";
+    }
+    else
+    {
+        if (bShouldBeValid)
+            std::cout << sName << " =FAIL=: should be valid but in invalid\n";
+        else
+            std::cout << sName << " =FAIL=: should be invalid but is valid\n";
+    }
+}
+
 void TestCreation( void )
 {
     std::cout << "\n=== TestCreation\n";
@@ -132,7 +154,7 @@ void TestCreation( void )
     ReportFraction( "fZero", "Nan", fZero);
     
     Fraction two_neg( -5, -2 );  // now defined a positive
-    ReportFraction( "f_2Neg", "5/2", two_neg);
+    ReportFraction( "f_2Neg", "-5/-2", two_neg);
 }
 
 void TestEquality( void )
@@ -197,7 +219,7 @@ static void TestAdd( void )
     ReportFraction( " a3", "3/2", f1 );
     
     f1 += Fraction( -3, 2 );
-    ReportFraction( " a4", "0/1", f1 );
+    ReportFraction( " a4", "0/4", f1 );
     
     f1 += Fraction( 1, 1 );
     ReportFraction( " a5", "1/1", f1 );
@@ -251,7 +273,7 @@ static void TestSub( void )
     ReportFraction( " s1", "1/2", f1 );
     
     f1 -= Fraction( 1, 2 );
-    ReportFraction( " a2", "0/1", f1 );
+    ReportFraction( " s2", "0/4", f1 );
     
     f1 -= Fraction( -1, 2 );
     ReportFraction( " s3", "1/2", f1 );
@@ -339,10 +361,30 @@ static void TestMult( void )
     
     f1 = Fraction( 7, 5 ) * Fraction( 5, 4 );
     ReportFraction( " m9", "7/4", f1 );
+    
+    f1 = Fraction( -2, -4) * Fraction( -1, 1 );
+    ReportFraction( "m10", "1/-2", f1 );
+    
+    f1 = Fraction( -4, -4) * Fraction( -2, -2 );
+    ReportFraction( "m11", "1/1", f1 );
+    
+    f1 = Fraction( -4, 4) * Fraction( -2, 2 );
+    ReportFraction( "m12", "1/1", f1 );
+    
+    f1 = Fraction( -4, 4) * Fraction( 2, -2 );
+    ReportFraction( "m13", "-1/-1", f1 );
+    
+    f1 = Fraction( 4, -4) * Fraction( -2, 2 );
+    ReportFraction( "m14", "-1/-1", f1 );
+    
+    f1 = Fraction( 4, -4) * Fraction( 2, -2 );
+    ReportFraction( "m15", "1/1", f1 );
 }
 
 void TestDivide( void )
 {
+    std::cout << "\n=== Test /=\n";
+    
     Fraction f1( 1, 1);
     Fraction f2( 1, 1);
     f1 /= f2;
@@ -366,8 +408,35 @@ void TestDivide( void )
     f1 = Fraction( -4,4 );
     f2 = Fraction( -2, -2 );
     Fraction f3 = f1 / f2;
-    ReportFraction( " d6", "-1/1", f3 );
+    ReportFraction( " d6", "1/-1", f3 );
     
     f1 = Fraction( -2,3 ) / Fraction( -1, 4 );
-    ReportFraction( " d7", "8/3", f1 );
+    ReportFraction( " d7", "-8/-3", f1 );
+}
+
+void TestInvalid( void )
+{
+    std::cout << "\n=== Test Valid\n";
+    
+    Fraction f1( 1, 1);
+    ReportValid( " v1", true, f1 );
+    
+    Fraction fInvalid( 1, 0);
+    ReportValid( " v2", false, fInvalid );
+    
+    ReportValid( " v3", false, fInvalid + fInvalid );
+    ReportValid( " v4", false, fInvalid - fInvalid );
+    ReportValid( " v5", false, fInvalid * fInvalid );
+    ReportValid( " v6", false, fInvalid / fInvalid );
+    
+    ReportValid( " v7", false, f1 + fInvalid );
+    ReportValid( " v8", false, f1 - fInvalid );
+    ReportValid( " v9", false, f1 * fInvalid );
+    ReportValid( "v10", false, f1 / fInvalid );
+    
+    ReportValid( "v11", false, fInvalid + f1 );
+    ReportValid( "v12", false, fInvalid - f1 );
+    ReportValid( "v13", false, fInvalid * f1 );
+    ReportValid( "v14", false, fInvalid / f1 );
+    
 }

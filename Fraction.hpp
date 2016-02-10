@@ -16,12 +16,9 @@
 
 // TODO Question: Do we want to allow setting of numerator/denominator individually
 // TODO Question: How to handle situation when both part of fraction are negative
-// TODO: get longer list of primes, handle values larger than list of primes in some way
 
 // Choice: use longs to store values, no floating point values
-// Choice: set denominator to 1 when numerator == 0
 // Choice: always store values in fully reduced form
-// Choice: always make the numerator negative for negative fractions, never the denominator
 
 class Fraction
 {
@@ -30,8 +27,7 @@ public:
     Fraction(long n, long d);
     
     // Fraction is not valid if denominator == 0
-    // m_denominator is set to 0
-    bool isValid( void ){ return m_denominator != 0; }
+    const bool isValid( void ) const { return m_denominator != 0; }
     
     // display
     const std::string asString( void ); // "1/2"
@@ -42,7 +38,7 @@ public:
     const long numerator( void ){ return m_numerator; }
     const long denominator( void ){ return m_denominator; }
     
-    void set_Numerator( long n );       // do we want these?
+    void set_Numerator( long n );       // To DO: Do we want these?
     void set_Denominator( long d );
 
     // equality operators
@@ -70,14 +66,7 @@ public:
     Fraction operator/(const Fraction &f);
     
 private:
-    void simplify( void ); // reduce fraction to simplifiest common values
-    
-    // enfore four constraints
-    // 1) if the denominator == 0, set it to 1 (and report and error somehow)
-    // 2) if one of the two values is negative, make sure its the numerator
-    // 3) if both values are negative, make both positive
-    // 4) if the numerator == 0, make the denominator == 1
-    void standardize_values( void );
+    void simplify( void ); // reduce fraction by largest common factors
     
     long m_numerator;
     long m_denominator;

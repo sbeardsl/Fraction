@@ -155,17 +155,17 @@ const double Fraction::asDouble( void )
 }
 
 // assume values stored in simplied form
-bool Fraction::operator==(Fraction &f)
+const bool Fraction::operator==(const Fraction &f) const
 {
     return (m_numerator == f.m_numerator) && (m_denominator == f.m_denominator);
 }
 
-bool Fraction::operator!=(Fraction &f)
+const bool Fraction::operator!=(const Fraction &f) const
 {
     return !(*this == f);
 }
 
-bool Fraction::operator>(Fraction &f)
+const bool Fraction::operator>(const Fraction &f) const
 {
     long left = m_numerator * f.m_denominator;
     long right = f.m_numerator * m_denominator;
@@ -173,7 +173,7 @@ bool Fraction::operator>(Fraction &f)
     return (left > right);
 }
 
-bool Fraction::operator<(Fraction &f)
+const bool Fraction::operator<(const Fraction &f) const
 {
     long left = m_numerator * f.m_denominator;
     long right = f.m_numerator * m_denominator;
@@ -181,7 +181,7 @@ bool Fraction::operator<(Fraction &f)
     return (left < right);
 }
 
-bool Fraction::operator>=(Fraction &f)
+const bool Fraction::operator>=(const Fraction &f) const
 {
     long left = m_numerator * f.m_denominator;
     long right = f.m_numerator * m_denominator;
@@ -189,7 +189,7 @@ bool Fraction::operator>=(Fraction &f)
     return (left >= right);
 }
 
-bool Fraction::operator<=(Fraction &f)
+const bool Fraction::operator<=(const Fraction &f) const 
 {
     long left = m_numerator * f.m_denominator;
     long right = f.m_numerator * m_denominator;

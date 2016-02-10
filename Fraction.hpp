@@ -46,14 +46,14 @@ public:
     void set_Denominator( long d );
 
     // equality operators
-    bool operator==(Fraction &f);
-    bool operator!=(Fraction &f);
+    const bool operator==( const Fraction &f) const;
+    const bool operator!=( const Fraction &f) const;
     
     // comparison
-    bool operator<(Fraction &f);
-    bool operator>(Fraction &f);
-    bool operator<=(Fraction &f);
-    bool operator>=(Fraction &f);
+    const bool operator<(const Fraction &f)const;
+    const bool operator>(const Fraction &f)const;
+    const bool operator<=(const Fraction &f)const;
+    const bool operator>=(const Fraction &f)const;
 
     // math functions
     Fraction operator+=(const Fraction &f);

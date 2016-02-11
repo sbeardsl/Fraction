@@ -39,8 +39,8 @@ public:
     const operator std::string(){ return asString(); }
     
     // access elements
-    const long numerator( void ){ return m_numerator; }
-    const long denominator( void ){ return m_denominator; }
+    long numerator( void ){ return m_numerator; }
+    long denominator( void ){ return m_denominator; }
     
     void set_Numerator( long n );       // To DO: Do we want these?
     void set_Denominator( long d );

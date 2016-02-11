@@ -457,5 +457,5 @@ void TestTypecast( void )
     std::string s = f1;
     std::cout << "f1(75,3) as string: " << s << "\n";
     
-    std::cout << "f1(75,3) as inline: " << f1 << "\n";  // reports double, not string
+    std::cout << "f1(75,3) as stream: " << f1 << "\n";  // reports double, not string
 }

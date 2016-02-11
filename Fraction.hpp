@@ -35,12 +35,12 @@ public:
     const double asDouble( void );
     
     // typecast
-    const operator double(){ return asDouble(); }
-    const operator std::string(){ return asString(); }
+    operator double(){ return asDouble(); }
+    operator std::string(){ return asString(); }
     
     // access elements
-    long numerator( void ){ return m_numerator; }
-    long denominator( void ){ return m_denominator; }
+    const long numerator( void ){ return m_numerator; }
+    const long denominator( void ){ return m_denominator; }
     
     void set_Numerator( long n );       // To DO: Do we want these?
     void set_Denominator( long d );

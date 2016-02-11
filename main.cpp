@@ -23,7 +23,7 @@ static void TestMult( void );
 static void TestDivide( void );
 static void TestCompare( void );
 static void TestInvalid( void );
-
+static void TestTypecast( void );
 
 int main(int argc, const char * argv[])
 {
@@ -35,6 +35,7 @@ int main(int argc, const char * argv[])
     TestDivide();
     TestCompare();
     TestInvalid();
+    TestTypecast();
     
     return 0;
 }
@@ -439,4 +440,22 @@ void TestInvalid( void )
     ReportValid( "v13", false, fInvalid * f1 );
     ReportValid( "v14", false, fInvalid / f1 );
     
+    Fraction fNan = Fraction( 0, 0 );
+    ReportGreaterThan("v15", false, fNan, fNan);
+    ReportGreaterThan("v16", false, f1, fNan);
+    ReportGreaterThan("v17", false, fNan, f1);
+}
+
+void TestTypecast( void )
+{
+    std::cout << "\n=== Test Typecast\n";
+    
+    Fraction f1(75,3);
+    double d = f1;
+    std::cout << "f1(75,3) as double: " << d << "\n";
+    
+    std::string s = f1;
+    std::cout << "f1(75,3) as string: " << s << "\n";
+    
+    std::cout << "f1(75,3) as inline: " << f1 << "\n";  // reports double, not string
 }

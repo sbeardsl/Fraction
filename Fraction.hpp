@@ -34,6 +34,10 @@ public:
     const std::string asDoubleAsString( void ); // ".5"
     const double asDouble( void );
     
+    // typecast
+    const operator double(){ return asDouble(); }
+    const operator std::string(){ return asString(); }
+    
     // access elements
     const long numerator( void ){ return m_numerator; }
     const long denominator( void ){ return m_denominator; }
